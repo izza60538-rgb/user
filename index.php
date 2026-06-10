@@ -1,117 +1,146 @@
 <?php
-$users = file_exists("users.txt") ? file("users.txt") : [];
+include 'db.php';
+
+$result = mysqli_query($conn, "SELECT * FROM users");
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Users Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Management</title>
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
 
-body{
-    background:#f4f4f4;
-    padding:30px;
-}
+        body{
+            background:#f4f4f4;
+            padding:30px;
+        }
 
-.container{
-    width:80%;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-}
+        .container{
+            width:80%;
+            margin:auto;
+            background:#fff;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
 
-.header{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:20px;
-}
+        .header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        }
 
-.btn{
-    padding:10px 15px;
-    color:white;
-    text-decoration:none;
-    border-radius:5px;
-}
+        h2{
+            color:#333;
+        }
 
-.add-btn{
-    background:green;
-}
+        .btn{
+            padding:10px 15px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            color:white;
+            text-decoration:none;
+            display:inline-block;
+        }
 
-.edit-btn{
-    background:orange;
-}
+        .add-btn{
+            background:green;
+        }
 
-.delete-btn{
-    background:red;
-}
+        .edit-btn{
+            background:orange;
+        }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+        .delete-btn{
+            background:red;
+        }
 
-th,td{
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
-}
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
 
-th{
-    background:#007bff;
-    color:white;
-}
-</style>
+        table, th, td{
+            border:1px solid #ccc;
+        }
+
+        th, td{
+            padding:12px;
+            text-align:center;
+        }
+
+        th{
+            background:#007bff;
+            color:white;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
 
-<div class="header">
-    <h2>Users</h2>
-    <a href="create.php" class="btn add-btn">Add User</a>
-</div>
+    <div class="header">
+        <h2>Users Management</h2>
 
-<table>
-<tr>
-    <th>Name</th>
-    <th>Age</th>
-    <th>Email</th>
-    <th>Action</th>
-</tr>
-
-<?php foreach($users as $index => $user):
-$data = explode("|", trim($user));
-?>
-
-<tr>
-    <td><?= $data[0] ?></td>
-    <td><?= $data[1] ?></td>
-    <td><?= $data[2] ?></td>
-
-    <td>
-        <a href="edit.php?id=<?= $index ?>" class="btn edit-btn">
-            Edit
+        <a href="create.php" class="btn add-btn">
+            Add User
         </a>
+    </div>
 
-        <a href="delete.php?id=<?= $index ?>"
-           class="btn delete-btn"
-           onclick="return confirm('Delete User?')">
-           Delete
-        </a>
-    </td>
-</tr>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-<?php endforeach; ?>
+        <tbody>
 
-</table>
+        <?php while($row = mysqli_fetch_assoc($result)) { ?>
+
+            <tr>
+                <td><?= $row['id']; ?></td>
+                <td><?= $row['name']; ?></td>
+                <td><?= $row['age']; ?></td>
+                <td><?= $row['email']; ?></td>
+
+                <td>
+
+                    <a
+                        href="edit.php?id=<?= $row['id']; ?>"
+                        class="btn edit-btn">
+                        Edit
+                    </a>
+
+                    <a
+                        href="delete.php?id=<?= $row['id']; ?>"
+                        class="btn delete-btn"
+                        onclick="return confirm('Are you sure to delete this user?')">
+                        Delete
+                    </a>
+
+                </td>
+            </tr>
+
+        <?php } ?>
+
+        </tbody>
+    </table>
 
 </div>
 

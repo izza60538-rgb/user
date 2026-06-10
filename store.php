@@ -1,16 +1,15 @@
 <?php
 
+include 'db.php';
+
 $name = $_POST['name'];
 $age = $_POST['age'];
 $email = $_POST['email'];
 
-$data = $name . "|" . $age . "|" . $email . PHP_EOL;
+$sql = "INSERT INTO users(name, age, email)
+        VALUES('$name','$age','$email')";
 
-file_put_contents(
-    "users.txt",
-    $data,
-    FILE_APPEND
-);
+mysqli_query($conn, $sql);
 
-header("Location:index.php");
+header("Location: index.php");
 exit();
